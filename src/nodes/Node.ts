@@ -3,7 +3,7 @@ import { Node as ProsemirrorNode } from "prosemirror-model";
 import Extension from "../lib/Extension";
 
 export default abstract class Node extends Extension {
-  get type() {
+  get type(): string {
     return "node";
   }
 

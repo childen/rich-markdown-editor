@@ -116,7 +116,7 @@ const downloadImageNode = async node => {
 };
 
 export default class Image extends Node {
-  get name() {
+  get name(): string {
     return "image";
   }
 
