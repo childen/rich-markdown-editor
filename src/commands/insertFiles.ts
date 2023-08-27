@@ -78,41 +78,41 @@ const insertFiles = function(
       .then(src => {
         // otherwise, insert it at the placeholder's position, and remove
         // the placeholder itself
-        const newImg = new Image();
+        // const newImg = new Image();
 
-        newImg.onload = () => {
-          const result = findPlaceholder(view.state, id);
+        // newImg.onload = () => {
+        const result = findPlaceholder(view.state, id);
 
-          // if the content around the placeholder has been deleted
-          // then forget about inserting this image
-          if (result === null) {
-            return;
-          }
+        // if the content around the placeholder has been deleted
+        // then forget about inserting this image
+        if (result === null) {
+          return;
+        }
 
-          const [from, to] = result;
+        const [from, to] = result;
+        view.dispatch(
+          view.state.tr
+            .replaceWith(from, to || from, schema.nodes.image.create({ src }))
+            .setMeta(uploadPlaceholderPlugin, { remove: { id } })
+        );
+
+        // If the users selection is still at the image then make sure to select
+        // the entire node once done. Otherwise, if the selection has moved
+        // elsewhere then we don't want to modify it
+        if (view.state.selection.from === from) {
           view.dispatch(
-            view.state.tr
-              .replaceWith(from, to || from, schema.nodes.image.create({ src }))
-              .setMeta(uploadPlaceholderPlugin, { remove: { id } })
+            view.state.tr.setSelection(
+              new NodeSelection(view.state.doc.resolve(from))
+            )
           );
+        }
+        // };
 
-          // If the users selection is still at the image then make sure to select
-          // the entire node once done. Otherwise, if the selection has moved
-          // elsewhere then we don't want to modify it
-          if (view.state.selection.from === from) {
-            view.dispatch(
-              view.state.tr.setSelection(
-                new NodeSelection(view.state.doc.resolve(from))
-              )
-            );
-          }
-        };
+        // newImg.onerror = error => {
+        //   throw error;
+        // };
 
-        newImg.onerror = error => {
-          throw error;
-        };
-
-        newImg.src = src;
+        // newImg.src = src;
       })
       .catch(error => {
         console.error(error);
